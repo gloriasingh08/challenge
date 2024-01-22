@@ -18,14 +18,27 @@ export function InputSelect<TItem>({
     left: 0,
   })
 
+  const employeeItems= useCallback((item: TItem | null)=> {
+    if (item===null){
+      return {value :null, label :"All employees"}
+    }
+
+    return parseItem(item);
+  },[parseItem]);
+
   const onChange = useCallback<InputSelectOnChange<TItem>>(
     (selectedItem) => {
       if (selectedItem === null) {
-        return
+        setSelectedValue(null);
+        consumerOnChange(null as unknown as TItem);
+      }
+      else{
+        setSelectedValue(selectedItem);
+        consumerOnChange(selectedItem);
       }
 
-      consumerOnChange(selectedItem)
-      setSelectedValue(selectedItem)
+     
+     
     },
     [consumerOnChange]
   )
@@ -92,7 +105,7 @@ export function InputSelect<TItem>({
           }
 
           return items.map((item, index) => {
-            const parsedItem = parseItem(item)
+            const parsedItem = employeeItems(item)
             return (
               <div
                 key={parsedItem.value}
